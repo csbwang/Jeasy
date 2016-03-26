@@ -1,4 +1,1 @@
-# JavaScript自用小框架
-- event:事件添加
-- move:简单动画库
-- ajax:自用的ajax库
+# 实现一个简单的JavaScript框架
