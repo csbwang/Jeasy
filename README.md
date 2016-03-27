@@ -27,3 +27,19 @@ Jeasy提供以下功能：
 `$().addRule(num, selectorStr, cssStr, position)`
 - 移除样式规则
 `$().rmRule(num, index)`
+- 设置显示
+`$().show()`
+- 设置隐藏
+`$().hide()`
+- 设置鼠标移入移出
+`$().hover()`
+- 设置元素水平垂直居中
+`$().center()`
+- 浏览器窗口大小变化事件
+`$().resize()`
+- 设置锁屏
+`$().lock()`
+- 解除锁屏
+`$().unlock()`
+- 拖拽
+`$().drag()`

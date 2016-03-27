@@ -4,14 +4,18 @@
 //*/
 
 // 使用这些方法是不需要每次都new 一个Jeasy对象，直接使用$()即可
-var $ = function(){
-	return new Jeasy();
+var $ = function(_this){
+	return new Jeasy(_this);
 };
 
-function Jeasy()
+function Jeasy(_this)
 {
 	// 把返回的节点保存在一个属性数组里
 	this.elements = [];
+	if(_this)
+	{
+		this.elements[0] = _this;
+	}
 }
 
 // 通过Id获取节点对象
@@ -26,7 +30,7 @@ Jeasy.prototype.getId = function(id)
 Jeasy.prototype.getName = function(name)
 {
 	var names = document.getElementsByName(name);
-	for(var i = 0; i < names.length; i ++)
+	for(var i = 0; i < names.length; i++)
 	{
 		this.elements.push(names[i]);
 	}
@@ -37,7 +41,7 @@ Jeasy.prototype.getName = function(name)
 Jeasy.prototype.getTag = function(tag)
 {
 	var tags = document.getElementsByTagName(tag);
-	for(var i = 0; i < tags.length; i ++)
+	for(var i = 0; i < tags.length; i++)
 	{
 		this.elements.push(tags[i]);
 	}
@@ -59,10 +63,10 @@ Jeasy.prototype.getClass = function(className, id)
 		node = document.getElementById(id);
 	}
 	var all = node.getElementsByTagName('*');
-	for(var i = 0; i < all.length; i ++)
+	for(var i = 0; i < all.length; i++)
 	{
 		var classNames = all[i].className.split(' ');
-		for(var j = 0; j< classNames.length; j ++)
+		for(var j = 0; j< classNames.length; j++)
 		{
 			if(classNames[j] === className)
 			{
@@ -89,7 +93,7 @@ Jeasy.prototype.getElement = function(index)
 // 添加css样式，或者返回css样式值
 Jeasy.prototype.css = function(attr, value)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		if(arguments.length===1)
 		{
@@ -114,7 +118,7 @@ Jeasy.prototype.css = function(attr, value)
 // 添加事件处理程序
 Jeasy.prototype.addHander = function(type, hander)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		if(this.elements[i].addEventListener) //DOM
 		{
@@ -135,7 +139,7 @@ Jeasy.prototype.addHander = function(type, hander)
 // 移除事件处理程序
 Jeasy.prototype.rmHander = function(type, hander)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		if(this.elements[i].removeEventListener) //DOM
 		{
@@ -156,7 +160,7 @@ Jeasy.prototype.rmHander = function(type, hander)
 // 设置innerHTML
 Jeasy.prototype.html = function(str)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		if(arguments.length===0)
 		{
@@ -173,7 +177,7 @@ Jeasy.prototype.html = function(str)
 // 在一个节点上添加一个class
 Jeasy.prototype.addClass = function(className)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		// 如果该节点不包含当前class的话才进行添加
 		if(!this.elements[i].className.match(new RegExp( '(\s|^)' + className + '(\s|$)') ))
@@ -187,7 +191,7 @@ Jeasy.prototype.addClass = function(className)
 // 删除一个节点的class
 Jeasy.prototype.rmClass = function(className)
 {
-	for(var i = 0; i < this.elements.length; i ++)
+	for(var i = 0; i < this.elements.length; i++)
 	{
 		if(!this.elements[i].className.match(new RegExp( '(\s|^)' + className + '(\s|$)') ))
 		{
@@ -227,3 +231,103 @@ Jeasy.prototype.rmRule = function(num, index)
 	}
 	return this;
 };
+
+// 设置显示
+Jeasy.prototype.show = function()
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].style.display = 'block';
+	}
+	return this;
+}
+
+// 设置隐藏
+Jeasy.prototype.hide = function()
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].style.display = 'none';
+	}
+	return this;
+}
+
+// 设置鼠标移入移出
+Jeasy.prototype.hover = function(over, out)
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].onmouseover = over;
+		this.elements[i].onmouseout = out;
+	}
+	return this;
+}
+
+// 设置元素水平垂直居中
+Jeasy.prototype.center = function(height, width){
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].style.top = (document.documentElement.clientHeight - height) / 2 - 20 + 'px';
+		this.elements[i].style.left = (document.documentElement.clientWidth - width) / 2 + 'px';
+	}
+	return this;
+}
+
+// 浏览器窗口大小变化事件
+Jeasy.prototype.resize = function(fn)
+{
+	window.onresize = fn;
+	return this;
+}
+
+// 设置锁屏，将作为幕布的div的z-index设为9999，遮盖其他所有元素，要在锁屏时突出的元素的z-index>9999
+Jeasy.prototype.lock = function()
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		// document.documentElement.clientWidth可能存在兼容性问题，低版本火狐使用innerWidth
+		this.elements[i].style.width = document.documentElement.clientWidth + 'px';
+		this.elements[i].style.height = document.documentElement.clientHeight + 'px';
+		this.elements[i].style.display = 'block';
+		// 锁屏时禁止滚动条
+		document.documentElement.style.overflow = 'hidden';
+	}
+	return this;
+}
+
+// 解锁屏幕
+Jeasy.prototype.unlock = function()
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].style.display = 'none';
+		document.documentElement.style.overflow = 'auto';
+	}
+	return this;
+}
+
+// 拖拽
+Jeasy.prototype.drag = function()
+{
+	for(var i = 0; i < this.elements.length; i++)
+	{
+		this.elements[i].onmousedown = function(e)
+		{
+			var e = e || window.event;
+			var _this = this;
+			var distanceX = e.clientX - _this.offsetLeft;
+			var distanceY = e.clientY - _this.offsetTop;
+			document.onmousemove = function(e)
+			{
+				_this.style.left = e.clientX - distanceX + 'px';
+				_this.style.top = e.clientY - distanceY + 'px';
+			}
+			document.onmouseup = function()
+			{
+				this.onmousemove = null;
+				this.onmouseup = null;
+			}
+		};
+	}
+	return this;
+}
